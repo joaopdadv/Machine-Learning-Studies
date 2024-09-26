@@ -9,3 +9,9 @@ class ReLU():
 
     def __call__(self, x):
         return self.forward(x)
+    
+    def load(self, path):
+        pass # Não faz nada
+
+    def save(self, path):
+        pass # Não faz nada

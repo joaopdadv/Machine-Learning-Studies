@@ -14,6 +14,15 @@ class MLP():
     def __call__(self, x):
         return self.forward(x)
     
+    def load(self, path: str):
+        self.W = np.load('trainings/' + path + '_W.npy')
+        self.b = np.load('trainings/' + path + '_b.npy')
+
+    def save(self, path: str):
+        np.save('trainings/' + path + '_W', self.W)
+        np.save('trainings/' + path + '_b', self.b)
+
+    
 class CompoundNN():
 
     def __init__(self, blocks:list):
@@ -26,3 +35,11 @@ class CompoundNN():
 
     def __call__(self, x):
         return self.forward(x)
+    
+    def load(self, path: str):
+        for i, block in enumerate(self.blocks):
+            block.load(path + f'_{i}')
+
+    def save(self, path: str):
+        for i, block in enumerate(self.blocks):
+            block.save(path + f'_{i}')
