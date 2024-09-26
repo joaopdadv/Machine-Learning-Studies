@@ -13,3 +13,16 @@ class MLP():
     
     def __call__(self, x):
         return self.forward(x)
+    
+class CompoundNN():
+
+    def __init__(self, blocks:list):
+        self.blocks = blocks
+
+    def forward(self, x):
+        for block in self.blocks:
+            x = block.forward(x)
+        return x
+
+    def __call__(self, x):
+        return self.forward(x)
