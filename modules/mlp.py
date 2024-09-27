@@ -15,8 +15,8 @@ class MLP():
         return self.forward(x)
     
     def load(self, path: str):
-        self.W = np.load('trainings/' + path + '_W.npy')
-        self.b = np.load('trainings/' + path + '_b.npy')
+        self.W = np.load(path + '_W.npy')
+        self.b = np.load(path + '_b.npy')
 
     def save(self, path: str):
         np.save('trainings/' + path + '_W', self.W)
