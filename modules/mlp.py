@@ -14,13 +14,17 @@ class MLP():
         self.x = x # guarda x para usar no backward
         return x @ self.W.T + self.b
     
-    def backward(self):
+    def backward(self, gradout):
         jacobian_x = self.W # jacobian_x é a derivada da saída com relação a x
         jacobian_b = np.eye(self.dout) # jacobian_b é a derivada da saída com relação a b
         jacobian_w = np.zeros((self.dout, self.din * self.dout)) # jacobian_w é a derivada da saída com relação a W. é uma matriz 2D que é zerada no inicio
         # Coloca os valores de jacobian_w, que são as entradas x, nas posições corretas 
         for i in range(self.dout):
             jacobian_w[i, i * self.din: (i+1) * self.din] = self.x
+
+        self.deltaW = gradout @ jacobian_w
+        self.deltaB = gradout @ jacobian_b
+        return gradout @ jacobian_x
     
     def __call__(self, x):
         return self.forward(x)
@@ -44,9 +48,10 @@ class CompoundNN():
             x = block.forward(x)
         return x
     
-    def backward(self):
-        for block in self.blocks:
-            block.backward()
+    def backward(self, gradout):
+        for block in self.blocks[::-1]: # Inverte a ordem dos blocos pois tem que ir do fim para o inicio
+            gradout = block.backward(gradout)
+        return gradout
 
     def __call__(self, x):
         return self.forward(x)

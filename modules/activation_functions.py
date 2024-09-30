@@ -8,12 +8,14 @@ class ReLU():
         self.x = x
         return np.maximum(0, x) # retorna 0 se x < 0, x se x >= 0
     
-    def backward(self):
+    def backward(self, gradout):
         din = dout = self.x.shape[1] # x.shape[1] é o din
         jacobian = np.zeros((dout, din))
         for i in range(din):
             if self.x[0, i] >= 0:
                 jacobian[i, i] = 1
+
+        return gradout @ jacobian
 
     def __call__(self, x):
         return self.forward(x)
