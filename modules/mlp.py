@@ -22,7 +22,7 @@ class MLP():
         for i in range(self.dout):
             jacobian_w[i, i * self.din: (i+1) * self.din] = self.x
 
-        self.deltaW = gradout @ jacobian_w
+        self.deltaW = (gradout @ jacobian_w).reshape(self.W.shape)
         self.deltaB = gradout @ jacobian_b
         return gradout @ jacobian_x
     
