@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import logsumexp
 
 class ReLU():
     def __init__(self):
@@ -51,7 +52,8 @@ class LogSoftmax():
 
     def forward(self, x):
         self.x = x
-        return x - np.log(np.exp(x).sum())
+        # return x - np.log(np.exp(x).sum())
+        return x - logsumexp(x, axis=1)
     
     def backward(self, gradout):
         dout = din = self.x.shape[1]
@@ -59,6 +61,8 @@ class LogSoftmax():
         for row in range(dout):
             for col in range(din):
                 jacobian[row, col] -= np.exp(self.x[0, col]) / np.exp(self.x).sum()
+        
+        return gradout @ jacobian
 
     def __call__(self, x):
         return self.forward(x)
