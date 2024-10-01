@@ -37,7 +37,7 @@ class MLP():
         # self.deltaB = gradout @ jacobian_b # shape: dout
 
         self.deltaW = gradout.T @ self.x
-        self.deltaB = gradout # shape: dout
+        self.deltaB = gradout.sum(0) # shape: dout
 
         return gradout @ self.W
     
