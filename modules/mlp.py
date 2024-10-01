@@ -2,8 +2,14 @@ import numpy as np
 
 class MLP():
     def __init__(self, din, dout):
-        self.W = np.random.randn(dout, din)
-        self.b = np.random.randn(dout) # bias array tem que ter o mesmo tamanho que a saída
+        # inicialização aleatória
+        # self.W = np.random.randn(dout, din)
+        # self.b = np.random.randn(dout) # bias array tem que ter o mesmo tamanho que a saída
+
+        # inicialização com xavier
+        self.W = (2 * np.random.randn(dout, din) - 1) * (np.sqrt(6) / np.sqrt(dout + din))
+        self.b = (2 * np.random.randn(dout) - 1) * (np.sqrt(6) / np.sqrt(dout + din))
+
         self.dout = dout
         self.din = din
 
