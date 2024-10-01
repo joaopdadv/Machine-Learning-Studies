@@ -44,3 +44,27 @@ class Softmax():
 
     def save(self, path):
         pass # Não faz nada
+
+class LogSoftmax():
+    def __init__(self):
+        pass
+
+    def forward(self, x):
+        self.x = x
+        return x - np.log(np.exp(x).sum())
+    
+    def backward(self, gradout):
+        dout = din = self.x.shape[1]
+        jacobian = np.eye(din)
+        for row in range(dout):
+            for col in range(din):
+                jacobian[row, col] -= np.exp(self.x[0, col]) / np.exp(self.x).sum()
+
+    def __call__(self, x):
+        return self.forward(x)
+    
+    def load(self, path):
+        pass # Não faz nada
+
+    def save(self, path):
+        pass # Não faz nada
