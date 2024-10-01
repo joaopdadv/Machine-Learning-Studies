@@ -17,13 +17,19 @@ class MLP():
     def backward(self, gradout):
         jacobian_x = self.W # jacobian_x é a derivada da saída com relação a x
         jacobian_b = np.eye(self.dout) # jacobian_b é a derivada da saída com relação a b
-        jacobian_w = np.zeros((self.dout, self.din * self.dout)) # jacobian_w é a derivada da saída com relação a W. é uma matriz 2D que é zerada no inicio
-        # Coloca os valores de jacobian_w, que são as entradas x, nas posições corretas 
-        for i in range(self.dout):
-            jacobian_w[i, i * self.din: (i+1) * self.din] = self.x
 
-        self.deltaW = (gradout @ jacobian_w).reshape(self.W.shape)
-        self.deltaB = gradout @ jacobian_b
+        all_jacobians_w = []
+        for b in range(self.x.shape[0]):
+            jacobian_w = np.zeros((self.dout, self.din * self.dout)) # jacobian_w é a derivada da saída com relação a W. é uma matriz 2D que é zerada no inicio
+            # Coloca os valores de jacobian_w, que são as entradas x, nas posições corretas 
+            for i in range(self.dout):
+                jacobian_w[i, i * self.din: (i+1) * self.din] = self.x[b]
+
+            all_jacobians_w.append(jacobian_w)
+
+        self.deltaW = np.concatenate([(gradout[b][None, ...] @ jacobian_w).reshape(self.W.shape)[None, ...] for b, jacobian_w in enumerate(all_jacobians_w)]).sum(0)
+        # self.deltaW = np.concatenate([(gradout @ jacobian_w).reshape(self.W.shape)[None, ...] for jacobian_w in all_jacobians_w])
+        self.deltaB = gradout @ jacobian_b # shape: dout
         return gradout @ jacobian_x
     
     def __call__(self, x):
